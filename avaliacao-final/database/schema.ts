@@ -32,17 +32,49 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class CategoriaSchema extends BaseModel {
+  static $columns = ['createdAt', 'descricao', 'id', 'name', 'updatedAt'] as const
+  $columns = CategoriaSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare descricao: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class ProdutoSchema extends BaseModel {
+  static $columns = ['categoriasId', 'createdAt', 'descricao', 'id', 'name', 'updatedAt'] as const
+  $columns = ProdutoSchema.$columns
+  @column()
+  declare categoriasId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare descricao: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = ['createdAt', 'email', 'id', 'name', 'password', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
   declare email: string
-  @column()
-  declare fullName: string | null
   @column({ isPrimary: true })
   declare id: number
+  @column()
+  declare name: string
   @column({ serializeAs: null })
   declare password: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })

@@ -1,26 +1,34 @@
 import vine from '@vinejs/vine'
 
-/**
- * Shared rules for email and password.
- */
-const email = () => vine.string().email().maxLength(254)
-const password = () => vine.string().minLength(8).maxLength(32)
+// Regras partilhadas para email e password
+const emailRule = () => vine.string().email().maxLength(254)
+const passwordRule = () => vine.string().minLength(8).maxLength(32)
 
 /**
- * Validator to use when performing self-signup
+ * Validador para criação de conta (Sign Up)
  */
-export const signupValidator = vine.create({
-  fullName: vine.string().nullable(),
-  email: email().unique({ table: 'users', column: 'email' }),
-  password: password(),
-  passwordConfirmation: password().sameAs('password'),
-})
+export const signupValidator = vine.compile(
+  vine.object({
+    // Se a tua migration de users tiver 'name' ou 'fullName', mantem o padrão.
+    // O teu professor usou fullName como opcional (.nullable()) na imagem:
+    name: vine.string().nullable(),
+
+    // Garante que o email é único na tabela 'users'
+    email: emailRule().unique({ table: 'users', column: 'email' }),
+
+    password: passwordRule(),
+
+    // Garante que a confirmação é idêntica à password
+    passwordConfirmation: passwordRule().sameAs('password'),
+  })
+)
 
 /**
- * Validator to use before validating user credentials
- * during login
+ * Validador para autenticação (Login)
  */
-export const loginValidator = vine.create({
-  email: email(),
-  password: vine.string(),
-})
+export const loginValidator = vine.compile(
+  vine.object({
+    email: emailRule(),
+    password: vine.string(),
+  })
+)

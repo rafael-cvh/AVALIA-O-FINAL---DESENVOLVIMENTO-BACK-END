@@ -5,6 +5,9 @@
 
 export const controllers = {
   AccessTokens: () => import('#controllers/access_tokens_controller'),
+  Categorias: () => import('#controllers/categorias_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
+  Produtos: () => import('#controllers/produtos_controller'),
   Profile: () => import('#controllers/profile_controller'),
+  Users: () => import('#controllers/users_controller'),
 }

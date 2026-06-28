@@ -3,54 +3,56 @@ import Produto from '#models/produto'
 import { createProdutoValidator } from '#validators/produto'
 
 export default class ProdutosController {
-  // Listar produtos (Com a regra de negócio: Filtrar produtos por categoria)
+  // PÚBLICO: Qualquer um (others e chefe) pode listar e filtrar
   async index({ request }: HttpContext) {
     const categoriaId = request.input('categoria_id')
+    const query = Produto.query()
 
-    // Se o cliente passar o ID da categoria na URL (?categoria_id=2), filtra por ela
     if (categoriaId) {
-      const produtosFiltrados = await Produto.query()
-        .where('categoriaId', categoriaId)
-        .preload('categoria')
-      return produtosFiltrados
+      query.where('categoriaId', categoriaId)
     }
 
-    // Se não passar nada, traz todos os produtos com a categoria anexada
-    const todosProdutos = await Produto.query().preload('categoria')
-    return todosProdutos
+    return await query
   }
 
-  // Cadastrar novo produto (Garante preço > 0 e estoque >= 0 pelo Validator)
-  async store({ request, response }: HttpContext) {
+  // PROTEGIDO: Só Gerente cadastra
+  async store({ request, auth, response }: HttpContext) {
+    if (auth.user?.role !== 'gerente') {
+      return response.forbidden({ message: 'Apenas gerentes podem cadastrar produtos.' })
+    }
+
     const payload = await request.validateUsing(createProdutoValidator)
     const produto = await Produto.create(payload)
-
     return response.created(produto)
   }
 
-  // Buscar um único produto pelo ID
+  // PÚBLICO: Qualquer um pode ver um produto específico
   async show({ params }: HttpContext) {
-    const produto = await Produto.query().where('id', params.id).preload('categoria').firstOrFail()
-
-    return produto
+    return await Produto.findOrFail(params.id)
   }
 
-  // Atualizar dados do produto
-  async update({ params, request }: HttpContext) {
+  // PROTEGIDO: Só Gerente edita
+  async update({ params, request, auth, response }: HttpContext) {
+    if (auth.user?.role !== 'gerente') {
+      return response.forbidden({ message: 'Apenas gerentes podem atualizar produtos.' })
+    }
+
     const produto = await Produto.findOrFail(params.id)
     const payload = await request.validateUsing(createProdutoValidator)
 
     produto.merge(payload)
     await produto.save()
-
     return produto
   }
 
-  // Deletar um produto né fi
-  async destroy({ params, response }: HttpContext) {
+  // PROTEGIDO: Só Gerente deleta
+  async destroy({ params, auth, response }: HttpContext) {
+    if (auth.user?.role !== 'gerente') {
+      return response.forbidden({ message: 'Apenas gerentes podem deletar produtos.' })
+    }
+
     const produto = await Produto.findOrFail(params.id)
     await produto.delete()
-
     return response.noContent()
   }
 }

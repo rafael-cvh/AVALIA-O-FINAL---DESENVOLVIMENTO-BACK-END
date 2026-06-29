@@ -1,58 +1,58 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Produto from '#models/produto'
 import { createProdutoValidator } from '#validators/produto'
+import db from '@adonisjs/lucid/services/db'
+import Produto from '#models/produto'
 
 export default class ProdutosController {
-  // PÚBLICO: Qualquer um (others e chefe) pode listar e filtrar
-  async index({ request }: HttpContext) {
+  // Cadastrar Produto
+  public async index({ request, response }: HttpContext) {
     const categoriaId = request.input('categoria_id')
-    const query = Produto.query()
 
     if (categoriaId) {
-      query.where('categoriaId', categoriaId)
+      const produtos = await Produto.query().where('categorias_id', categoriaId)
+      return response.ok(produtos)
     }
 
-    return await query
+    const produtos = await Produto.all()
+    return response.ok(produtos)
   }
-
-  // PROTEGIDO: Só Gerente cadastra
-  async store({ request, auth, response }: HttpContext) {
-    if (auth.user?.role !== 'gerente') {
-      return response.forbidden({ message: 'Apenas gerentes podem cadastrar produtos.' })
-    }
-
-    const payload = await request.validateUsing(createProdutoValidator)
-    const produto = await Produto.create(payload)
-    return response.created(produto)
-  }
-
-  // PÚBLICO: Qualquer um pode ver um produto específico
-  async show({ params }: HttpContext) {
-    return await Produto.findOrFail(params.id)
-  }
-
-  // PROTEGIDO: Só Gerente edita
-  async update({ params, request, auth, response }: HttpContext) {
-    if (auth.user?.role !== 'gerente') {
-      return response.forbidden({ message: 'Apenas gerentes podem atualizar produtos.' })
-    }
-
-    const produto = await Produto.findOrFail(params.id)
+  //cadastro de produto
+  async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createProdutoValidator)
 
-    produto.merge(payload)
-    await produto.save()
-    return produto
+    const [id] = await db
+      .table('produtos')
+      .insert({
+        name: payload.name,
+        valor: payload.price,
+        estoque: payload.stock,
+        categorias_id: payload.categoriaId, // 👈 Exatamente igual à Migration
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+      .returning('id')
+
+    return response.created({ message: 'Produto criado com sucesso!', id })
   }
 
-  // PROTEGIDO: Só Gerente deleta
-  async destroy({ params, auth, response }: HttpContext) {
-    if (auth.user?.role !== 'gerente') {
-      return response.forbidden({ message: 'Apenas gerentes podem deletar produtos.' })
-    }
+  // Atualizar Produto
+  async update({ params, request, response }: HttpContext) {
+    const payload = await request.validateUsing(createProdutoValidator)
 
-    const produto = await Produto.findOrFail(params.id)
-    await produto.delete()
+    await db.from('produtos').where('id', params.id).update({
+      name: payload.name,
+      valor: payload.price,
+      estoque: payload.stock,
+      categorias_id: payload.categoriaId, // 👈 Corrigido aqui também!
+      updated_at: new Date(),
+    })
+
+    return response.ok({ message: 'Produto atualizado com sucesso!' })
+  }
+
+  // Deletar Produto
+  async destroy({ params, response }: HttpContext) {
+    await db.from('produtos').where('id', params.id).delete()
     return response.noContent()
   }
 }

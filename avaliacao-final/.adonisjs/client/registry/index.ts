@@ -48,17 +48,17 @@ const routes = {
     tokens: [{"old":"/user/:id","type":0,"val":"user","end":""},{"old":"/user/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['user.destroy']['types'],
   },
-  'produtos.index': {
+  'produto.index': {
     methods: ["GET","HEAD"],
     pattern: '/produto',
     tokens: [{"old":"/produto","type":0,"val":"produto","end":""}],
-    types: placeholder as Registry['produtos.index']['types'],
+    types: placeholder as Registry['produto.index']['types'],
   },
-  'produtos.show': {
+  'produto.show': {
     methods: ["GET","HEAD"],
     pattern: '/produto/:id',
     tokens: [{"old":"/produto/:id","type":0,"val":"produto","end":""},{"old":"/produto/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['produtos.show']['types'],
+    types: placeholder as Registry['produto.show']['types'],
   },
   'categorias.index': {
     methods: ["GET","HEAD"],
@@ -72,23 +72,23 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.show']['types'],
   },
-  'produtos.store': {
+  'produto.store': {
     methods: ["POST"],
     pattern: '/produto',
     tokens: [{"old":"/produto","type":0,"val":"produto","end":""}],
-    types: placeholder as Registry['produtos.store']['types'],
+    types: placeholder as Registry['produto.store']['types'],
   },
-  'produtos.update': {
-    methods: ["PUT"],
+  'produto.update': {
+    methods: ["PUT","PATCH"],
     pattern: '/produto/:id',
     tokens: [{"old":"/produto/:id","type":0,"val":"produto","end":""},{"old":"/produto/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['produtos.update']['types'],
+    types: placeholder as Registry['produto.update']['types'],
   },
-  'produtos.destroy': {
+  'produto.destroy': {
     methods: ["DELETE"],
     pattern: '/produto/:id',
     tokens: [{"old":"/produto/:id","type":0,"val":"produto","end":""},{"old":"/produto/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['produtos.destroy']['types'],
+    types: placeholder as Registry['produto.destroy']['types'],
   },
   'categorias.store': {
     methods: ["POST"],
@@ -97,7 +97,7 @@ const routes = {
     types: placeholder as Registry['categorias.store']['types'],
   },
   'categorias.update': {
-    methods: ["PUT"],
+    methods: ["PUT","PATCH"],
     pattern: '/categorias/:id',
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.update']['types'],

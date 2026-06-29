@@ -13,12 +13,12 @@ export interface ApiDefinition {
     update: typeof routes['user.update']
     destroy: typeof routes['user.destroy']
   }
-  produtos: {
-    index: typeof routes['produtos.index']
-    show: typeof routes['produtos.show']
-    store: typeof routes['produtos.store']
-    update: typeof routes['produtos.update']
-    destroy: typeof routes['produtos.destroy']
+  produto: {
+    index: typeof routes['produto.index']
+    show: typeof routes['produto.show']
+    store: typeof routes['produto.store']
+    update: typeof routes['produto.update']
+    destroy: typeof routes['produto.destroy']
   }
   categorias: {
     index: typeof routes['categorias.index']

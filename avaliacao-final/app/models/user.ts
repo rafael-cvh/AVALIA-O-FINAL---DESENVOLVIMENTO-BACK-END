@@ -3,14 +3,12 @@ import { type AccessToken, DbAccessTokensProvider } from '@adonisjs/auth/access_
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { compose } from '@adonisjs/core/helpers'
 import hash from '@adonisjs/core/services/hash'
-import { column } from '@adonisjs/lucid/orm'
 
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   static accessTokens = DbAccessTokensProvider.forModel(User)
   declare currentAccessToken?: AccessToken
 
-  @column()
-  declare role: 'chefe' | 'gerente'
+  // NADA de propriedade 'role' declarada aqui! Ela vem 100% herdada do UserSchema automático.
 
   get initials() {
     const [first, last] = this.name ? this.name.split(' ') : this.email.split('@')

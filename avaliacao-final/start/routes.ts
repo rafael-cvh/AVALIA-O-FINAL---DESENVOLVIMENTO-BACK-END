@@ -4,25 +4,16 @@ import { middleware } from '#start/kernel'
 
 router.post('/session', [controllers.AccessTokens, 'store'])
 router.delete('/session', [controllers.AccessTokens, 'destroy']).use(middleware.auth())
-
 router.resource('/user', controllers.Users).apiOnly()
 
-router.get('/produto', [controllers.Produtos, 'index'])
-router.get('/produto/:id', [controllers.Produtos, 'show'])
+// (Qualquer um acessa deslogado)
+router.resource('/produto', controllers.Produtos).apiOnly().only(['index', 'show'])
+router.resource('/categorias', controllers.Categorias).apiOnly().only(['index', 'show'])
 
-router.get('/categorias', [controllers.Categorias, 'index'])
-router.get('/categorias/:id', [controllers.Categorias, 'show'])
-
+// rotas que precisa de login
 router
   .group(() => {
-    // CRUD de Produtos (Modificações)
-    router.post('/produto', [controllers.Produtos, 'store'])
-    router.put('/produto/:id', [controllers.Produtos, 'update'])
-    router.delete('/produto/:id', [controllers.Produtos, 'destroy'])
-
-    // CRUD de Categorias (Modificações)
-    router.post('/categorias', [controllers.Categorias, 'store'])
-    router.put('/categorias/:id', [controllers.Categorias, 'update'])
-    router.delete('/categorias/:id', [controllers.Categorias, 'destroy'])
+    router.resource('/produto', controllers.Produtos).apiOnly().except(['index', 'show'])
+    router.resource('/categorias', controllers.Categorias).apiOnly().except(['index', 'show'])
   })
   .use(middleware.auth())

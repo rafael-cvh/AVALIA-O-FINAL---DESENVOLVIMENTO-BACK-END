@@ -91,7 +91,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['destroy']>>>
     }
   }
-  'produtos.index': {
+  'produto.index': {
     methods: ["GET","HEAD"]
     pattern: '/produto'
     types: {
@@ -103,7 +103,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/produtos_controller').default['index']>>>
     }
   }
-  'produtos.show': {
+  'produto.show': {
     methods: ["GET","HEAD"]
     pattern: '/produto/:id'
     types: {
@@ -139,7 +139,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['show']>>>
     }
   }
-  'produtos.store': {
+  'produto.store': {
     methods: ["POST"]
     pattern: '/produto'
     types: {
@@ -151,8 +151,8 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/produtos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'produtos.update': {
-    methods: ["PUT"]
+  'produto.update': {
+    methods: ["PUT","PATCH"]
     pattern: '/produto/:id'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/produto').createProdutoValidator)>>
@@ -163,7 +163,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/produtos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'produtos.destroy': {
+  'produto.destroy': {
     methods: ["DELETE"]
     pattern: '/produto/:id'
     types: {
@@ -188,7 +188,7 @@ export interface Registry {
     }
   }
   'categorias.update': {
-    methods: ["PUT"]
+    methods: ["PUT","PATCH"]
     pattern: '/categorias/:id'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/categoria').createCategoriaValidator)>>

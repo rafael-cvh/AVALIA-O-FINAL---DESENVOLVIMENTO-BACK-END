@@ -8,8 +8,6 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   static accessTokens = DbAccessTokensProvider.forModel(User)
   declare currentAccessToken?: AccessToken
 
-  // NADA de propriedade 'role' declarada aqui! Ela vem 100% herdada do UserSchema automático.
-
   get initials() {
     const [first, last] = this.name ? this.name.split(' ') : this.email.split('@')
     if (first && last) {
